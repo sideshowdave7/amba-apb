@@ -1,0 +1,22 @@
+;;;APB Master AFSM
+;;;
+
+:fsm apb
+
+:in (PREADY TRANSFER)
+:out (PSEL PENABLE)
+
+
+:init-in (PREADY~ TRANSFER~)
+:init-out (PSEL~ PENABLE~)
+
+:init-state 0
+
+:state  0 (TRANSFER)
+        1 (PSEL * PENABLE~)
+:state  1 (TRANSFER~) 
+        2 (PSEL * PENABLE)
+:state  2 (PREADY * TRANSFER) 
+        1 (PSEL * PENABLE~)
+:state  2 (PREADY) 
+        0 (PENABLE~ * PSEL~)

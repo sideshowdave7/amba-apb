@@ -1,0 +1,124 @@
+* (load "/uusoc/facility/cad_tools/Async/bin/meat/load-meat.lisp")
+
+T
+* (meat "apb-master-async.data" t)
+WARNING: S0-->S1 transition: check specification for output PENABLE
+WARNING: S1-->S2 transition: check specification for output PSEL
+WARNING: S2-->S1 transition: check specification for output PSEL
+WARNING: S1-->S2 transition: check specification for output PSEL
+Initial Input Table:
+
+FSM       APB
+INPUTS    (PREADY TRANSFER)
+OUTPUTS   (PSEL PENABLE)
+
+IN:  00 01 10 11
+
+S0   0  1  0  0
+     00 X0 00 00
+0
+
+S1   2  1  2  1
+     1X 10 1X 10
+0
+
+S2   2  2  2  1
+     11 11 11 1X
+0
+
+
+Be sure that the :INIT-STATE (initial state) in your input file is entered
+in the FIRST list of your selected maximal compatibles!
+Max Compatibles: ((0) (1) (2))
+'((0) (1) (2))
+Enter State set: 
+Merged Table
+
+FSM       APB
+INPUTS    (PREADY TRANSFER)
+OUTPUTS   (PSEL PENABLE)
+
+IN:  00 01 10 11
+
+S0   0  1  0  0
+     00 X0 00 00
+1010
+
+S1   2  1  2  1
+     1X 10 1X 10
+0110
+
+S2   2  2  2  1
+     11 11 11 1X
+0101
+
+
+Merged Table with STATE CODES:
+
+FSM       APB
+INPUTS    (PREADY TRANSFER)
+OUTPUTS   (PSEL PENABLE)
+
+IN:  00 01 10 11
+
+S0   0  1  0  0
+     00 X0 00 00
+00
+
+S1   2  1  2  1
+     1X 10 1X 10
+01
+
+S2   2  2  2  1
+     11 11 11 1X
+11
+
+S3   X  X  X  X
+     XX XX XX XX
+10
+
+
+SOP for "Y1":
+Doing Get-Pimps...
+Getting sync solutions.....
+Getting async solutions...
+ *****The Following Are Asynchronous Solutions for Y1 ***** 
+
+Y0*TRANSFER~ + Y1*PREADY~
+  22: 
+ *****Asynchronous Minimization Done***** 
+
+SOP for "Y0":
+Doing Get-Pimps...
+Getting sync solutions.....
+Getting async solutions...
+ *****The Following Are Asynchronous Solutions for Y0 ***** 
+
+PREADY~*TRANSFER + Y0
+  18: 
+ *****Asynchronous Minimization Done***** 
+
+SOP for PSEL:
+Doing Get-Pimps...
+Getting sync solutions.....
+Getting async solutions...
+ *****The Following Are Asynchronous Solutions for PSEL ***** 
+
+Y0
+   6: 
+ *****Asynchronous Minimization Done***** 
+
+SOP for PENABLE:
+Doing Get-Pimps...
+Getting sync solutions.....
+Getting async solutions...
+ *****The Following Are Asynchronous Solutions for PENABLE ***** 
+
+Y1
+   6: 
+ *****Asynchronous Minimization Done***** 
+
+
+ HEURISTIC TOTAL FOR THIS ASSIGNMENT: 52
+(52)
+

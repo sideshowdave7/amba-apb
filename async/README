@@ -1,0 +1,30 @@
+David Hurst
+University of Utah
+Spring 2014
+
+Asynchronous AMBA-APB Bus Design
+
+
+Tools used:
+3D (Available of University of Utah CADE machines)
+Artisan 180nm academic VLSI library
+Cadence synthesis
+
+
+Directories:
+
+3d: Contains all 3d generated files
+report: Contains all area/power results
+synth: Contains all synthesis generated files
+
+
+hdl: Contains all the following mapped source files:
+
+APB_MASTER_ASYNC.v: Asyncronhous FSM mapped onto Artisan 180nm academic gate library.
+APB_SLAVE_ASYNC.v:  Synchronous (simulation-only) design for simulating correctness of APB_MASTER afsm.
+APB_TOP.v: Sample top level design for Async BUS
+APB_tb.v : Simulation stimulus.
+
+
+
+apg-master-async.data: This is the specification used as input for the 3D burst-mode state machine tool.

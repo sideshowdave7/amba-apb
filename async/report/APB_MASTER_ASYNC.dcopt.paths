@@ -1,0 +1,35 @@
+ 
+****************************************
+Report : timing
+        -path end
+        -delay max
+        -nworst 1000
+        -max_paths 1000
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+Operating Conditions: PnomV180T025_STD_CELL_7RF   Library: PnomV180T025_STD_CELL_7RF
+Wire Load Model Mode: enclosed
+
+Endpoint                         Path Delay     Path Required     Slack
+------------------------------------------------------------------------
+PSEL (out)                         0.356 r        infinity     infinity
+PSEL (out)                         0.344 r        infinity     infinity
+PSEL (out)                         0.335 f        infinity     infinity
+PSEL (out)                         0.334 f        infinity     infinity
+PENABLE (out)                      0.274 r        infinity     infinity
+PENABLE (out)                      0.262 r        infinity     infinity
+PSEL (out)                         0.261 r        infinity     infinity
+PSEL (out)                         0.254 f        infinity     infinity
+PENABLE (out)                      0.225 f        infinity     infinity
+PENABLE (out)                      0.224 f        infinity     infinity
+PSEL (out)                         0.189 r        infinity     infinity
+PENABLE (out)                      0.180 r        infinity     infinity
+PSEL (out)                         0.168 f        infinity     infinity
+PENABLE (out)                      0.144 f        infinity     infinity
+PENABLE (out)                      0.079 r        infinity     infinity
+PENABLE (out)                      0.046 f        infinity     infinity
+
+1

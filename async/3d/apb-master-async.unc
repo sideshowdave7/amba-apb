@@ -1,0 +1,17 @@
+input	PREADY                   1
+input	TRANSFER                 0
+output	PSEL                     0
+output	PENABLE                  0
+output	zzz00                    0
+
+0  1	TRANSFER+                | PSEL+ zzz00+ 
+1  2	TRANSFER-                | PENABLE+ 
+2  1	TRANSFER+                | PENABLE- 
+0  3	PREADY-                  | 
+1  4	PREADY-                  | zzz00- 
+2  5	PREADY-                  | zzz00- 
+3  4	TRANSFER+                | PSEL+ 
+4  5	TRANSFER-                | PENABLE+ 
+5  0	PREADY+                  | PENABLE- PSEL- 
+5  6	TRANSFER+                | PENABLE- 
+6  1	PREADY+                  | zzz00+ 

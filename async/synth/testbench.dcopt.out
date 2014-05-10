@@ -1,0 +1,658 @@
+Using setup-synopsys from S13
+Assuming your OS is amd64
+You are now set up to run the synopsys tools.
+
+Working directory is /home/davidh/apb_async/async/synth
+
+                      Design Compiler Graphical
+                            DC Ultra (TM)
+                             DFTMAX (TM)
+                         Power Compiler (TM)
+                           DesignWare (R)
+                           DC Expert (TM)
+                         Design Vision (TM)
+                          HDL Compiler (TM)
+                         VHDL Compiler (TM)
+                            DFT Compiler
+                        Library Compiler (TM)
+                         Design Compiler(R)
+
+          Version G-2012.06-SP3 for RHEL64 -- Oct 23, 2012
+               Copyright (c) 1988-2012 Synopsys, Inc.
+
+This software and the associated documentation are confidential and 
+proprietary to Synopsys, Inc. Your use or disclosure of this software 
+is subject to the terms and conditions of a written license agreement 
+between you, or your company, and Synopsys, Inc.
+
+Initializing...
+### This is the script for optimizing the verilog
+#----------------------------------------------------------------------#
+#                        DESIGN DEFINITION                             #
+#----------------------------------------------------------------------#
+set design_name  testbench
+testbench
+set design_dir   "."
+.
+### EDIT $design_name.cstr.tcl for timing and other constraints!
+############## technology files #########################
+### can include multiple .db files in string.
+### IBM 7rf 180nm:
+set lib_name    "PnomV180T025_STD_CELL_7RF"
+PnomV180T025_STD_CELL_7RF
+set lib_db      "PnomV180T025_STD_CELL_7RF.db"
+PnomV180T025_STD_CELL_7RF.db
+set lib_dir     "/uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/"
+/uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/
+#set lib_pdb   
+set driving_cell   "INVERT_N"
+INVERT_N
+set load_pin       "A"
+A
+set operating_cond "PnomV180T025_STD_CELL_7RF"
+PnomV180T025_STD_CELL_7RF
+set wire_load_mod  "ZERO_WLM_4MZWB"
+ZERO_WLM_4MZWB
+################################################
+#            DC configuration variables
+# Milkyway related variables
+set mw_design_library $design_name.mw
+testbench.mw
+#set mw_power_net   VDD
+#set mw_ground_net  VSS
+set mw_logic1_net  VDD
+VDD
+set mw_logic0_net  VSS
+VSS
+set mw_power_port  VDD
+VDD
+set mw_ground_port VSS
+VSS
+# db and cache configuration
+set cache_read  {}
+set cache_write {}
+set allow_newer_db_files       true
+true
+set write_compressed_db_files  true
+true
+set sh_source_uses_search_path true
+true
+#################################################
+# Define checkpoint function
+proc checkpoint {name} {
+  echo "CPU-$name: [cputime -self -child]"
+  echo "MEM-$name: [mem]"
+  echo "CLK-$name: [clock seconds]"
+}
+#----------------------------------------------------------------------#
+#                             DESIGN SETUP                             #
+#----------------------------------------------------------------------#
+set search_path [concat  . $design_dir $lib_dir $search_path]
+. . /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/ . /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/minpower/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/syn_ver /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/sim_ver
+set search_path "$search_path ${synopsys_root}/libraries/syn"
+. . /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/ . /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/minpower/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/syn_ver /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/sim_ver /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn
+set search_path "$search_path ${synopsys_root}/dw/sim_ver"
+. . /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/ . /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/minpower/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/syn_ver /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/sim_ver /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn /uusoc/facility/cad_common/Synopsys/SYN-S13/dw/sim_ver
+################################################################
+# DC library definitions
+set local_link_library [list ]
+set target_library $lib_db
+PnomV180T025_STD_CELL_7RF.db
+#set target_library $lib_dir/$lib_db
+set synthetic_library "dw_foundation.sldb"
+dw_foundation.sldb
+set link_library [concat * $lib_db $synthetic_library]
+* PnomV180T025_STD_CELL_7RF.db dw_foundation.sldb
+#set link_library [concat * $lib_dir/$lib_db $synthetic_library]
+if [info exists lib_pdb] {
+    set physical_library $lib_pdb
+} else {
+    set physical_library [list ]
+}
+set symbol_library [list ]
+################################################################
+### LINT-28: unconnected ports
+### LINT-29: feedthroughs
+### LINT-31: shorted outputs
+### LINT-52: constant outputs
+if [info exists dc_shell_mode] {
+    set suppress_errors "$suppress_errors TRANS-1 TIM-111 TIM-164 TIM-175 OPT-109 UID-101 TIM-134 DDB-74 LINT-29 LINT-31 LINT-32 LINT-33 LINT-52"
+}
+ TRANS-1 TIM-111 TIM-164 TIM-175 OPT-109 UID-101 TIM-134 DDB-74 LINT-29 LINT-31 LINT-32 LINT-33 LINT-52
+checkpoint setup
+CPU-setup: 1
+MEM-setup: 178916
+CLK-setup: 1399697670
+#----------------------------------------------------------------------#
+#                        READ DB FROM RTLOPT                           #
+#----------------------------------------------------------------------#
+read_file -format ddc $design_name.rtlopt.ddc
+Loading db file '/uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/PnomV180T025_STD_CELL_7RF.db'
+Loading db file '/uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn/dw_foundation.sldb'
+Loading db file '/uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn/gtech.db'
+Loading db file '/uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn/standard.sldb'
+  Loading link library 'PnomV180T025_STD_CELL_7RF'
+  Loading link library 'gtech'
+Reading ddc file '/home/davidh/apb_async/async/synth/testbench.rtlopt.ddc'.
+Loaded 1 design.
+Current design is 'testbench'.
+testbench
+checkpoint read
+CPU-read: 2
+MEM-read: 178916
+CLK-read: 1399697670
+current_design $design_name
+Current design is 'testbench'.
+{testbench}
+link
+
+  Linking design 'testbench'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  testbench                   /home/davidh/apb_async/async/synth/testbench.rtlopt.ddc
+  PnomV180T025_STD_CELL_7RF (library) /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/PnomV180T025_STD_CELL_7RF.db
+  dw_foundation.sldb (library) /uusoc/facility/cad_common/Synopsys/SYN-S13/libraries/syn/dw_foundation.sldb
+
+1
+checkpoint link
+CPU-link: 2
+MEM-link: 178916
+CLK-link: 1399697670
+#----------------------------------------------------------------------#
+#                           READ CONSTRAINTS                           #
+#----------------------------------------------------------------------#
+current_design $design_name
+Current design is 'testbench'.
+{testbench}
+#set formality_link_debug true
+set svf_file_records_change_names_changes true
+true
+set enable_dw_datapath_in_svf true
+true
+#set enable_ununiquify_in_svf true
+set hlo_write_svf_info true
+true
+set synlib_fmlink_output_verilog true
+true
+set enable_constant_propagation_in_svf true
+true
+set_svf $design_name.dcopt.svf
+1
+set_vsdc $design_name.dcopt.vsdc
+1
+current_design  $design_name
+Current design is 'testbench'.
+{testbench}
+source $design_name.cstr.tcl
+Current design is 'testbench'.
+Using operating conditions 'PnomV180T025_STD_CELL_7RF' found in library 'PnomV180T025_STD_CELL_7RF'.
+Warning: Can't find objects matching 'c_elem*' in design 'testbench'. (UID-95)
+Error: Value for list 'object_list' must have 1 elements. (CMD-036)
+0
+checkpoint cstr
+CPU-cstr: 2
+MEM-cstr: 178916
+CLK-cstr: 1399697670
+#----------------------------------------------------------------------#
+#                                COMPILE                               #
+#----------------------------------------------------------------------#
+#current_design $design_name
+#set ungroup_record_report_info true
+list_designs -show_file
+
+/home/davidh/apb_async/async/synth/testbench.rtlopt.ddc
+testbench (*)
+1
+current_design $design_name
+Current design is 'testbench'.
+{testbench}
+echo "Start: [cputime -self -child]"
+Start: 2
+## Do retiming:
+#set_balance_registers true
+#set_optimize_registers true
+check_design
+ 
+****************************************
+check_design summary:
+Version:     G-2012.06-SP3
+Date:        Fri May  9 22:54:30 2014
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                     33
+    Unconnected ports (LINT-28)                                    33
+--------------------------------------------------------------------------------
+
+Warning: In design 'testbench', port 'PRESETn' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[0]' is not connected to any nets. (LINT-28)
+1
+## clock gate design
+#insert_clock_gating
+#set_flatten -phase true -effort medium
+### fix crashes during min-delay calculation?
+#set_cost_priority -min_delay
+## compile design
+compile -area_effort medium
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | G-2012.06-DWBB_201206.3 |     *     |
+| Licensed DW Building Blocks        | G-2012.06-DWBB_201206.3 |           |
+============================================================================
+
+
+Information: There are 33 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'testbench'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: Timing loop detected. (OPT-150)
+	U5/A2 U5/Z U2/A U2/Z 
+Information: Timing loop detected. (OPT-150)
+	U3/A1 U3/Z 
+Warning: Disabling timing arc between pins 'A2' and 'Z' on cell 'U5'
+         to break a timing loop. (OPT-314)
+Warning: Disabling timing arc between pins 'A1' and 'Z' on cell 'U3'
+         to break a timing loop. (OPT-314)
+Information: Design 'testbench' has no optimization constraints set. (OPT-108)
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Structuring 'testbench'
+  Mapping 'testbench'
+
+   ELAPSED            WORST NEG TOTAL NEG  DESIGN                            
+    TIME      AREA      SLACK     SLACK   RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+   ELAPSED            WORST NEG TOTAL NEG  DESIGN                            
+    TIME      AREA      SLACK     SLACK   RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+   ELAPSED            WORST NEG TOTAL NEG  DESIGN                            
+    TIME      AREA      SLACK     SLACK   RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+    0:00:01     105.4      0.00       0.0       0.0                          
+Loading db file '/uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/PnomV180T025_STD_CELL_7RF.db'
+
+  Optimization Complete
+  ---------------------
+1
+#compile -area_effort medium -power_effort high
+#compile -area_effort medium -boundary_optimization
+#compile -area_effort medium -ungroup_all
+#compile -area_effort high -power_effort high -map_effort medium -ungroup_all
+#compile -area_effort high -power_effort high -map_effort high -ungroup_all -verify_effort high
+#compile_ultra
+#compile_ultra -timing_high_effort_script
+check_design
+ 
+****************************************
+check_design summary:
+Version:     G-2012.06-SP3
+Date:        Fri May  9 22:54:32 2014
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                     33
+    Unconnected ports (LINT-28)                                    33
+--------------------------------------------------------------------------------
+
+Warning: In design 'testbench', port 'PRESETn' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'testbench', port 'PRDATA[0]' is not connected to any nets. (LINT-28)
+1
+## guarantee naming consistency
+#source namingrules.dc
+echo "End: [cputime -self -child]"
+End: 3
+checkpoint compile
+CPU-compile: 3
+MEM-compile: 178916
+CLK-compile: 1399697672
+#----------------------------------------------------------------------#
+#                           FINAL QOR REPORT                           #
+#----------------------------------------------------------------------#
+current_design $design_name
+Current design is 'testbench'.
+{testbench}
+file delete $design_name.profile_post.out
+report_qor
+Information: Updating design information... (UID-85)
+Information: Timing loop detected. (OPT-150)
+	U5/A2 U5/Z U9/A U9/Z 
+Information: Timing loop detected. (OPT-150)
+	U3/A1 U3/Z 
+Warning: Disabling timing arc between pins 'A2' and 'Z' on cell 'U5'
+         to break a timing loop. (OPT-314)
+Warning: Disabling timing arc between pins 'A1' and 'Z' on cell 'U3'
+         to break a timing loop. (OPT-314)
+ 
+****************************************
+Report : qor
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+
+  Timing Path Group (none)
+  -----------------------------------
+  Levels of Logic:               3.00
+  Critical Path Length:          0.36
+  Critical Path Slack:         uninit
+  Critical Path Clk Period:       n/a
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:          0
+  Hierarchical Port Count:          0
+  Leaf Cell Count:                  6
+  Buf/Inv Cell Count:               2
+  CT Buf/Inv Cell Count:            0
+  Combinational Cell Count:         6
+  Sequential Cell Count:            0
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:      105.369600
+  Noncombinational Area:     0.000000
+  Buf/Inv Area:             22.579201
+  Net Area:                  0.000000
+  -----------------------------------
+  Cell Area:               105.369600
+  Design Area:             105.369600
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:             8
+  Nets With Violations:             0
+  Max Trans Violations:             0
+  Max Cap Violations:               0
+  -----------------------------------
+
+
+  Hostname: lab1-12
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                    0.00
+  Logic Optimization:                  0.01
+  Mapping Optimization:                0.29
+  -----------------------------------------
+  Overall Compile Time:                0.84
+  Overall Compile Wall Clock Time:     1.21
+
+1
+report_area
+ 
+****************************************
+Report : area
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+Library(s) Used:
+
+    PnomV180T025_STD_CELL_7RF (File: /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/PnomV180T025_STD_CELL_7RF.db)
+
+Number of ports:                           37
+Number of nets:                             8
+Number of cells:                            6
+Number of combinational cells:              6
+Number of sequential cells:                 0
+Number of macros:                           0
+Number of buf/inv:                          2
+Number of references:                       5
+
+Combinational area:        105.369600
+Buf/Inv area:               22.579201
+Noncombinational area:       0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:           105.369600
+Total area:                 undefined
+1
+report_timing -attributes
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+Operating Conditions: PnomV180T025_STD_CELL_7RF   Library: PnomV180T025_STD_CELL_7RF
+Wire Load Model Mode: enclosed
+
+  Startpoint: TRANSFER (input port)
+  Endpoint: PSEL (output port)
+  Path Group: (none)
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  testbench          ZERO_WLM_4MZWB        PnomV180T025_STD_CELL_7RF
+
+Attributes:
+    d - dont_touch
+    u - dont_use
+   mo - map_only
+   so - size_only
+    i - ideal_net or ideal_network
+
+  Point                                    Incr       Path      Attributes
+  -----------------------------------------------------------------------------
+  input external delay                     0.00       0.00 r
+  TRANSFER (in)                            0.00       0.00 r
+  U3/Z (OA21_I)                            0.12       0.12 r    so 
+  U5/Z (AOI21_E)                           0.06       0.18 f    so 
+  U9/Z (NAND2_A)                           0.17       0.36 r
+  PSEL (out)                               0.00       0.36 r
+  data arrival time                                   0.36
+  -----------------------------------------------------------------------------
+  (Path is unconstrained)
+
+
+1
+report_constraints
+ 
+****************************************
+Report : constraint
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+
+
+    Constraint                                       Cost
+    -----------------------------------------------------
+    max_transition                                   0.00 (MET)
+    max_fanout                                       0.00 (MET)
+    max_capacitance                                  0.00 (MET)
+
+
+1
+#  report_timing -from din -to i0/msched/lout/qreg*/D -delay max -max_paths 1
+#  report_timing -from din -to i1/msched/lout/qreg*/D -delay max -max_paths 1
+#  report_timing -from din -to i2/msched/lout/qreg*/D -delay max -max_paths 1
+#  report_timing -from din -to i3/msched/lout/qreg*/D -delay max -max_paths 1
+#report_timing -from hsh/lc/C4R2200r0/A0 -to hsh/lc0/C4R22000/A0 -delay min
+#report_timing -from hsh/lc0/C4R22000/A0 -to hsh/lc/C4R2200r0/A0 -delay min
+##report_timing -from hsh/constblk/\sel_reg[0]/CK -to hsh/latt1/d -delay max -max_paths 1
+#report_timing -from lc0/C4R2200r0/A0 -to lc15/C4R2200r0/A0 -delay min -max_paths 10
+#report_timing -from { tk0/lr tk10/lr tk11/lr } -to { tk10/lr tk11/lr tk2/lr } -delay min -max_paths 20
+#report_timing -from { tk10/ra tk11/ra tk2/ra } -to { tk0/ra tk10/ra tk10/ra } -delay min -max_paths 20
+#report_timing -from R0_reg/q -to { R10_reg/d R11_reg/d } -max_paths 20
+#report_timing -from R10_reg/q -to R2_reg/d -max_paths 20
+#report_timing -from R11_reg/q -to R2_reg/d -max_paths 20
+#report_timing -from { tk0/lr tk0/ra}  -to  R0_reg/clk -max_paths 20
+#report_timing -from { tk10/lr tk10/ra } -to  R10_reg/clk -max_paths 20
+#report_timing -from { tk11/lr tk11/ra } -to  R11_reg/clk -max_paths 20
+#report_timing -from { tk2/lr tk2/ra } -to  R2_reg/clk -max_paths 20
+checkpoint report
+CPU-report: 3
+MEM-report: 178916
+CLK-report: 1399697672
+#----------------------------------------------------------------------#
+#                                 WRITE                                #
+#----------------------------------------------------------------------#
+current_design $design_name
+Current design is 'testbench'.
+{testbench}
+write -format ddc -hierarchy -output $design_name.dcopt.ddc
+Writing ddc file 'testbench.dcopt.ddc'.
+1
+write -format verilog -hierarchy -output $design_name.dcopt.v
+Writing verilog file '/home/davidh/apb_async/async/synth/testbench.dcopt.v'.
+1
+#write -format verilog -output $design_name.dcopt.v
+write_sdc $design_name.dcopt.sdc
+1
+write_sdf -context verilog $design_name.dcopt.sdf
+Information: Annotated 'cell' delays are assumed to include load delay. (UID-282)
+Information: Writing timing information to file '/home/davidh/apb_async/async/synth/testbench.dcopt.sdf'. (WT-3)
+1
+redirect $design_name.dcopt.constraints { report_constraints -all_violators -verbose -significant_digits 3 }
+redirect $design_name.dcopt.paths { report_timing -path end -delay max -max_paths 1000 -nworst 1000 -significant_digits 3 }
+redirect $design_name.dcopt.paths.min { report_timing -path end -delay min -max_paths 1000 -nworst 1000 -significant_digits 3 }
+redirect $design_name.dcopt.fullpaths { report_timing -path full -delay max -max_paths 1000 -nworst 1000 -significant_digits 3 }
+redirect $design_name.dcopt.fullpaths.min { report_timing -path full -delay min -max_paths 1000 -nworst 1500 -significant_digits 3 }
+## Area of 65nm NAND2X1A12TR is 1.8
+redirect $design_name.dcopt.area { report_area }
+redirect $design_name.dcopt.power { report_power }
+# write_mw_verilog -design $design_name $design_name.mw.v
+checkpoint write
+CPU-write: 3
+MEM-write: 178916
+CLK-write: 1399697672
+exit
+
+Thank you...

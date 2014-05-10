@@ -1,0 +1,13 @@
+PSEL =
+  TRANSFER +
+  zzz00 +
+  PREADY' PSEL 
+
+PENABLE =
+  TRANSFER' zzz00 +
+  PREADY' TRANSFER' PSEL 
+
+zzz00 =
+  PREADY TRANSFER +
+  PREADY zzz00 
+

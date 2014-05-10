@@ -1,0 +1,10 @@
+.i 5
+.o 1
+.ilb PREADY TRANSFER PSEL PENABLE zzz00
+.ob PENABLE
+.p 0
+101-1 0
+-0111 0
+0011- 0
+001-0 0
+.e

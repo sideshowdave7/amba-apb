@@ -1,0 +1,29 @@
+ 
+****************************************
+Report : area
+Design : testbench
+Version: G-2012.06-SP3
+Date   : Fri May  9 22:54:32 2014
+****************************************
+
+Library(s) Used:
+
+    PnomV180T025_STD_CELL_7RF (File: /uusoc/facility/cad_tools/Async/lib/IBM/7RF/synopsys/PnomV180T025_STD_CELL_7RF.db)
+
+Number of ports:                           37
+Number of nets:                             8
+Number of cells:                            6
+Number of combinational cells:              6
+Number of sequential cells:                 0
+Number of macros:                           0
+Number of buf/inv:                          2
+Number of references:                       5
+
+Combinational area:        105.369600
+Buf/Inv area:               22.579201
+Noncombinational area:       0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:           105.369600
+Total area:                 undefined
+1
